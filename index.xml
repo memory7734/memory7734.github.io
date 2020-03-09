@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Elijah</title>
+    <link>https://memory7734.com/</link>
+    <description>Recent content on Elijah</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <lastBuildDate>Mon, 09 Mar 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://memory7734.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>https://memory7734.com/about/</link>
+      <pubDate>Mon, 09 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/about/</guid>
+      <description>About Elijah Zhang 稍微会一点Java、Python、C++，想学Go、Rust，前端无能，尤其CSS没救 目前还在武汉读计算机研究生，经常活跃于邮箱、博客</description>
+    </item>
+    
+    <item>
+      <title>蓝桥杯 算法训练 Representative Sampling</title>
+      <link>https://memory7734.com/post/representative-sampling/</link>
+      <pubDate>Fri, 12 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/representative-sampling/</guid>
+      <description>【题目描述】 来自ABBYY的小明有一个与“细胞与遗传学研究所”的合作。最近，研究所用一个新的题目考验小明。题目如下。 有由n个细胞组成的一个集</description>
+    </item>
+    
+    <item>
+      <title>AVL树的创建</title>
+      <link>https://memory7734.com/post/avl-tree/</link>
+      <pubDate>Wed, 22 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/avl-tree/</guid>
+      <description>与之前创建的树不同，我们在使用AVL树的时候要考虑到树的高度，所以在节点上增加了一个height信息。通过Height函数来返回当前节点的高</description>
+    </item>
+    
+    <item>
+      <title>二叉树遍历方式的转换</title>
+      <link>https://memory7734.com/post/tree-traversal-convert/</link>
+      <pubDate>Tue, 21 Mar 2017 20:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/tree-traversal-convert/</guid>
+      <description>在学习树的时候，碰到了一道题，是如何从先序遍历和中序遍历的结果中得到后序遍历，正常情况下第一反应就是重建二叉树，然后再后序输出，在室友的指点</description>
+    </item>
+    
+    <item>
+      <title>树的先序、中序、后序、层次遍历</title>
+      <link>https://memory7734.com/post/tree-traversal/</link>
+      <pubDate>Tue, 21 Mar 2017 16:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/tree-traversal/</guid>
+      <description>在遇到树的时候，很重要的一点就是对于树的遍历，树的遍历方式分为先序、中序、后序和层次遍历 先序遍历是首先输出根节点其次是左子树和右子树 中序遍历</description>
+    </item>
+    
+    <item>
+      <title>二叉搜索树</title>
+      <link>https://memory7734.com/post/binary-search-tree/</link>
+      <pubDate>Mon, 20 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/binary-search-tree/</guid>
+      <description>在学习数据结构中最常见的，最多考到的就是树，而树中最多使用到的就是二叉树，我们将学习如何对一棵二叉树进行增删改查，其中二叉树用二叉搜索树举例</description>
+    </item>
+    
+    <item>
+      <title>中缀、前缀、后缀表达式的转换</title>
+      <link>https://memory7734.com/post/reverse-polish-notation/</link>
+      <pubDate>Tue, 14 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/post/reverse-polish-notation/</guid>
+      <description>它们的区别在于操作符与操作数之间的位置关系，对于前缀和后缀表达式语法上不需要括号也能无歧义的解析求得结果，对于计算机来说，在没有括号的情况下</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://memory7734.com/search/placeholder/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://memory7734.com/search/placeholder/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

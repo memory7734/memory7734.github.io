@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Elijah">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://memory7734.com/img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="https://memory7734.com/img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="蓝桥杯 算法训练 Representative Sampling" />
+    <meta property="og:title" content="蓝桥杯 算法训练 Representative Sampling" />
+    <meta property="twitter:title" content="蓝桥杯 算法训练 Representative Sampling" />
+    
+
+    
+    <meta name="description" content="网络原住民。">
+    <meta property="og:description" content="网络原住民。" />
+    <meta property="twitter:description" content="网络原住民。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword" content="Elijah, 博客, 个人网站, 互联网, Web">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>蓝桥杯 算法训练 Representative Sampling</title>
+
+    <link rel="canonical" href="/post/representative-sampling/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css" />
+
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Elijah</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/%E7%AE%97%E6%B3%95">算法</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/java" title="Java">
+                            Java
+                        </a>
+                        
+                        <a class="tag" href="/tags/tree" title="Tree">
+                            Tree
+                        </a>
+                        
+                    </div>
+                    <h1>蓝桥杯 算法训练 Representative Sampling</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                                Elijah
+                         
+                        on 
+                        Friday, May 12, 2017
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h3 id="题目描述">【题目描述】</h3>
+<p>　　来自ABBYY的小明有一个与“细胞与遗传学研究所”的合作。最近，研究所用一个新的题目考验小明。题目如下。</p>
+<p>　　有由n个细胞组成的一个集合（不一定不同）每个细胞是一个由小写拉丁字母组成的字符串。科学家给小明提出的问题是从给定集合中选出一个大小为k的子集，使得所选子集的代表值最大。</p>
+<p>　　小明做了些研究并得出了一个结论，即一个蛋白质集合的代表制可以用一个方便计算的整数来表示。我们假设当前的集合为{a1, &hellip;, ak}，包含了k个用以表示蛋白质的字符串。那么蛋白质集合的代表值可以用如下的式子来表示：</p>
+<p>　　其中f(x, y)表示字符串x和y的最长公共前缀的长度，例如：</p>
+<p>　　<code>f(&quot;abc&quot;, &quot;abd&quot;) = 2 ， f(&quot;ab&quot;, &quot;bcd&quot;) = 0.</code></p>
+<p>　　因此，蛋白质集合<code>{&quot;abc&quot;, &quot;abd&quot;, &quot;abe&quot;}</code>的代表值等于<code>6</code>，集合<code>{&quot;aaa&quot;, &quot;ba&quot;, &quot;ba&quot;}</code>的代表值等于<code>2</code>。</p>
+<p>　　在发现了这个之后，小明要求赛事参与者写一个程序选出，给定蛋白质的集合中的大小为<code>k</code>的子集中，能获得最大可能代表性值得一个子集。帮助他解决这个问题吧！</p>
+<h3 id="输入格式">【输入格式】</h3>
+<p>　　输入数据第一行包含2个正整数<code>n</code>和<code>k</code>（1≤k≤n），由一个空格隔开。接下来的n行每一行都包含对蛋白质的描述。每个蛋白质都是一个仅有不超过500个小写拉丁字母组成的非空字符串。有些字符串可能是相等的。</p>
+<h3 id="输出格式">【输出格式】</h3>
+<p>　　输出一个整数，表示给定蛋白质集合的大小为k的子集的代表值最大可能是多少。</p>
+<h3 id="数据规模">【数据规模】</h3>
+<p>　　20%的数据保证：1 ≤ n ≤ 20</p>
+<p>　　50%的数据保证：1 ≤ n ≤ 100</p>
+<p>　　100%的数据保证：1 ≤ n ≤ 2000</p>
+<h3 id="样例输入1">【样例输入1】</h3>
+<pre><code>3 2
+aba
+bzd
+abq
+</code></pre><h3 id="样例输出1">【样例输出1】</h3>
+<pre><code>2
+</code></pre><h3 id="样例输入2">【样例输入2】</h3>
+<pre><code>4 3
+eee
+rrr
+ttt
+qqq
+</code></pre><h3 id="样例输出2">【样例输出2】</h3>
+<pre><code>0
+</code></pre><h3 id="样例输入3">【样例输入3】</h3>
+<pre><code>4 3
+aaa
+abba
+abbc
+abbd
+</code></pre><h3 id="样例输出3">【样例输出3】</h3>
+<pre><code>9
+</code></pre><hr>
+<p>这个题运用到了字典树，和dp的思想，网上好像没有人分享我在这里写一下，题目的意思不太好理解，就是从n个string里面选出k个，使得k个string之间两两求最长前缀长度的和最大</p>
+<p>如果暴力的话看到网友贴的测试结果是只能得到10分，这边用字典树可以全部通过得到100</p>
+<p>字典树(trie tree)结构大概如下，通过这样的树结构可以大幅提高对较多string情况下的访问速度，在使用词典软件的时候根据当前输入的字母预测可能对应的单词就是运用了这种结构</p>
+<pre><code>                       root
+                    /   \    \
+                    t   a     b
+                    |   |     |
+                    h   n     y
+                    |   |  \  |
+                    e   s  y  e
+                 /  |   |
+                 i  r   w
+                 |  |   |
+                 r  e   e
+                        |
+                        r
+</code></pre><p>在本题中，我运用这样的树结构，首先扫描全部的string来创建树，再根据每个节点的子节点对应的后缀来判断后缀数组中的最长前缀和设置为当前节点的权重weight，再去搜索最大的k个string得到相应的答案</p>
+<hr>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#ff79c6">import</span> java.io.BufferedReader<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.io.IOException<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.io.InputStreamReader<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.ArrayList<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.Collections<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.List<span style="color:#ff79c6">;</span>
+
+<span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">TrieNode</span> <span style="color:#8be9fd;font-style:italic">implements</span> Comparable<span style="color:#ff79c6">{</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">char</span> val<span style="color:#ff79c6">;</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">int</span> count<span style="color:#ff79c6">;</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">int</span> deep<span style="color:#ff79c6">;</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">int</span> weight<span style="color:#ff79c6">;</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> List<span style="color:#ff79c6">&lt;</span>TrieNode<span style="color:#ff79c6">&gt;</span> children<span style="color:#ff79c6">;</span>
+
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">TrieNode</span><span style="color:#ff79c6">(</span><span style="color:#8be9fd">char</span> val<span style="color:#ff79c6">,</span> <span style="color:#8be9fd">int</span> deep<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span> <span style="color:#ff79c6">=</span> val<span style="color:#ff79c6">;</span>     <span style="color:#6272a4">//char值
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">=</span> 1<span style="color:#ff79c6">;</span>     <span style="color:#6272a4">//在当前节点位置相同前缀的字符串数量
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">deep</span> <span style="color:#ff79c6">=</span> deep<span style="color:#ff79c6">;</span>   <span style="color:#6272a4">//string的位置，也是trie tree的深度
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span> <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span>    <span style="color:#6272a4">//从当前结点开始的字串相同前缀长度和
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span> <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;</span>TrieNode<span style="color:#ff79c6">&gt;();</span>  <span style="color:#6272a4">//子节点
+</span><span style="color:#6272a4"></span>    <span style="color:#ff79c6">}</span>
+    @Override
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">compareTo</span><span style="color:#ff79c6">(</span>Object o<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">((</span>TrieNode<span style="color:#ff79c6">)</span> o<span style="color:#ff79c6">).</span><span style="color:#50fa7b">weight</span> <span style="color:#ff79c6">-</span> <span style="color:#ff79c6">this</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span><span style="color:#ff79c6">;</span>
+    <span style="color:#ff79c6">}</span>
+<span style="color:#ff79c6">}</span>
+<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Main</span> <span style="color:#ff79c6">{</span>
+    <span style="color:#6272a4">//创建trie tree
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">insert</span><span style="color:#ff79c6">(</span>TrieNode root<span style="color:#ff79c6">,</span> String string<span style="color:#ff79c6">,</span> <span style="color:#8be9fd">int</span> deep<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#6272a4">//string的长度为0则返回
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">length</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">==</span> 0<span style="color:#ff79c6">)</span>
+            <span style="color:#ff79c6">return</span><span style="color:#ff79c6">;</span>
+        <span style="color:#6272a4">//获取初始值
+</span><span style="color:#6272a4"></span>        <span style="color:#8be9fd">char</span> start <span style="color:#ff79c6">=</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">charAt</span><span style="color:#ff79c6">(</span>0<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&lt;</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">();</span> i<span style="color:#ff79c6">++)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">).</span><span style="color:#50fa7b">val</span> <span style="color:#ff79c6">==</span> start<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+                insert<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">),</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">substring</span><span style="color:#ff79c6">(</span>1<span style="color:#ff79c6">),</span> deep <span style="color:#ff79c6">+</span> 1<span style="color:#ff79c6">);</span>
+                root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">).</span><span style="color:#50fa7b">count</span><span style="color:#ff79c6">++;</span>
+                <span style="color:#ff79c6">return</span><span style="color:#ff79c6">;</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        TrieNode node <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> TrieNode<span style="color:#ff79c6">(</span>start<span style="color:#ff79c6">,</span> deep <span style="color:#ff79c6">+</span> 1<span style="color:#ff79c6">);</span>
+        root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">);</span>
+        insert<span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">,</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">substring</span><span style="color:#ff79c6">(</span>1<span style="color:#ff79c6">),</span> deep <span style="color:#ff79c6">+</span> 1<span style="color:#ff79c6">);</span>
+    <span style="color:#ff79c6">}</span>
+    <span style="color:#6272a4">//根据树结构初始化权重值
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">weight</span><span style="color:#ff79c6">(</span>TrieNode root<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">&lt;=</span> 1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">return</span><span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&lt;</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">();</span> i<span style="color:#ff79c6">++)</span> <span style="color:#ff79c6">{</span>
+            weight<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">));</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#6272a4">//当前节点权重等于所有后缀的长度和+当前节点的数量排列组合
+</span><span style="color:#6272a4"></span>        root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span> <span style="color:#ff79c6">=</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">-</span> 1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">/</span> 2<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&lt;</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">();</span> i<span style="color:#ff79c6">++)</span> <span style="color:#ff79c6">{</span>
+            TrieNode node <span style="color:#ff79c6">=</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">);</span>
+            root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span> <span style="color:#ff79c6">+=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span><span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">search</span><span style="color:#ff79c6">(</span>TrieNode root<span style="color:#ff79c6">,</span> <span style="color:#8be9fd">int</span> k<span style="color:#ff79c6">,</span><span style="color:#8be9fd">int</span> pos<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>root <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">return</span> 0<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+        Collections<span style="color:#ff79c6">.</span><span style="color:#50fa7b">sort</span><span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">);</span>
+        TrieNode node<span style="color:#ff79c6">;</span>
+        <span style="color:#8be9fd">int</span> res <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span>
+        <span style="color:#8be9fd">int</span> max <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span>
+        <span style="color:#8be9fd">boolean</span> flag <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">true</span><span style="color:#ff79c6">;</span>    <span style="color:#6272a4">//标记为真的时候，求排序后的子节点的前i个节点权重和，使得节点数量&lt;k
+</span><span style="color:#6272a4"></span>        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&lt;</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">();</span> i<span style="color:#ff79c6">++)</span> <span style="color:#ff79c6">{</span>
+            node <span style="color:#ff79c6">=</span> root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>flag <span style="color:#ff79c6">&amp;&amp;</span> k <span style="color:#ff79c6">&gt;=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+                res <span style="color:#ff79c6">+=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">weight</span> <span style="color:#ff79c6">+</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">-</span> 1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">/</span> 2 <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">deep</span> <span style="color:#ff79c6">-</span> 1 <span style="color:#ff79c6">-</span> pos<span style="color:#ff79c6">);</span>
+                k <span style="color:#ff79c6">-=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span><span style="color:#ff79c6">;</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>k <span style="color:#ff79c6">&lt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">&amp;&amp;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">!=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">children</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">())</span> <span style="color:#ff79c6">{</span>
+                max <span style="color:#ff79c6">=</span> Math<span style="color:#ff79c6">.</span><span style="color:#50fa7b">max</span><span style="color:#ff79c6">(</span>search<span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">,</span> k<span style="color:#ff79c6">,</span> pos <span style="color:#ff79c6">+</span> 1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">+</span> k <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">(</span>k <span style="color:#ff79c6">-</span> 1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">/</span> 2 <span style="color:#ff79c6">*</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">deep</span> <span style="color:#ff79c6">-</span> pos<span style="color:#ff79c6">),</span> max<span style="color:#ff79c6">);</span>
+                flag <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">false</span><span style="color:#ff79c6">;</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">return</span> res <span style="color:#ff79c6">+</span> max<span style="color:#ff79c6">;</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">[]</span> args<span style="color:#ff79c6">)</span> <span style="color:#8be9fd;font-style:italic">throws</span> IOException <span style="color:#ff79c6">{</span>
+        BufferedReader br <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> BufferedReader<span style="color:#ff79c6">(</span><span style="color:#ff79c6">new</span> InputStreamReader<span style="color:#ff79c6">(</span>System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">in</span><span style="color:#ff79c6">));</span>
+        String<span style="color:#ff79c6">[]</span> strings <span style="color:#ff79c6">=</span> br<span style="color:#ff79c6">.</span><span style="color:#50fa7b">readLine</span><span style="color:#ff79c6">().</span><span style="color:#50fa7b">split</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34; &#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#8be9fd">int</span> n <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>strings<span style="color:#ff79c6">[</span>0<span style="color:#ff79c6">]);</span>
+        <span style="color:#8be9fd">int</span> k <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>strings<span style="color:#ff79c6">[</span>1<span style="color:#ff79c6">]);</span>
+        TrieNode root <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> TrieNode<span style="color:#ff79c6">((</span><span style="color:#8be9fd">char</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">(</span>0<span style="color:#ff79c6">),</span> 0<span style="color:#ff79c6">);</span>
+        root<span style="color:#ff79c6">.</span><span style="color:#50fa7b">count</span> <span style="color:#ff79c6">=</span> n<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> 0<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&lt;</span> n<span style="color:#ff79c6">;</span> i<span style="color:#ff79c6">++)</span> <span style="color:#ff79c6">{</span>
+            insert<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">,</span> br<span style="color:#ff79c6">.</span><span style="color:#50fa7b">readLine</span><span style="color:#ff79c6">(),</span> 0<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span>
+        weight<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">);</span>
+        System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">println</span><span style="color:#ff79c6">(</span>search<span style="color:#ff79c6">(</span>root<span style="color:#ff79c6">,</span> k<span style="color:#ff79c6">,</span> 0<span style="color:#ff79c6">));</span>
+    <span style="color:#ff79c6">}</span>
+<span style="color:#ff79c6">}</span>
+
+</code></pre></div>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/avl-tree/" data-toggle="tooltip" data-placement="top" title="AVL树的创建">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "elijahs-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/tree" title="tree">
+                            tree
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                <p class="copyright text-muted">
+                    Copyright &copy; Elijah 2020
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+            o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if ($('#tag_cloud').length !== 0) {
+        async("/js/jquery.tagcloud.js", function () {
+            $.fn.tagcloud.defaults = {
+                
+                color: { start: '#bbbbee', end: '#0085a1' },
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function () {
+        var $nav = document.querySelector("nav");
+        if ($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-96009236-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+</html>

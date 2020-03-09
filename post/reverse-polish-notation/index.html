@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Elijah">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://memory7734.com/img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="https://memory7734.com/img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="中缀、前缀、后缀表达式的转换" />
+    <meta property="og:title" content="中缀、前缀、后缀表达式的转换" />
+    <meta property="twitter:title" content="中缀、前缀、后缀表达式的转换" />
+    
+
+    
+    <meta name="description" content="网络原住民。">
+    <meta property="og:description" content="网络原住民。" />
+    <meta property="twitter:description" content="网络原住民。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword" content="Elijah, 博客, 个人网站, 互联网, Web">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>中缀、前缀、后缀表达式的转换</title>
+
+    <link rel="canonical" href="/post/reverse-polish-notation/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css" />
+
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Elijah</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/%E7%AE%97%E6%B3%95">算法</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/about/">ABOUT</a></li>
+                    
+
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/home-bg-jeep.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/java" title="Java">
+                            Java
+                        </a>
+                        
+                        <a class="tag" href="/tags/stack" title="Stack">
+                            Stack
+                        </a>
+                        
+                    </div>
+                    <h1>中缀、前缀、后缀表达式的转换</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                                Elijah
+                         
+                        on 
+                        Tuesday, March 14, 2017
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <p>它们的区别在于操作符与操作数之间的位置关系，对于前缀和后缀表达式语法上不需要括号也能无歧义的解析求得结果，对于计算机来说，在没有括号的情况下运算更加简单，所以在求解表达式问题时通常把中缀表达式转化为前缀或后缀表达式之后再进行运算。主要用到的算法有<a href="https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6%E5%9C%BA%E7%AE%97%E6%B3%95">调度场算法</a></p>
+<p>对于中缀表达式到前缀表达式或者后缀表达式的转换在平常做数据结构题目的时候经常会碰到，通过合理运用栈进行操作，将能够帮助我们高效完成中缀表达式的计算过程，逻辑思路清晰。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#ff79c6">import</span> java.util.ArrayList<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.Collections<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.List<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.Stack<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">import</span> java.util.StringTokenizer<span style="color:#ff79c6">;</span>
+
+<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">Main</span> <span style="color:#ff79c6">{</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> Stack<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> operator <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Stack<span style="color:#ff79c6">&lt;&gt;();</span>     <span style="color:#6272a4">//操作符栈
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> Stack<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> result <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Stack<span style="color:#ff79c6">&lt;&gt;();</span>       <span style="color:#6272a4">//结果运算栈
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> prefix <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;();</span>    <span style="color:#6272a4">//前缀表达式集合
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> infix <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;();</span>     <span style="color:#6272a4">//中缀表达式集合
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> postifx <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> ArrayList<span style="color:#ff79c6">&lt;&gt;();</span>   <span style="color:#6272a4">//后缀表达式集合
+</span><span style="color:#6272a4"></span>
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 构造函数 传入中缀表达式 进行初始化处理
+</span><span style="color:#6272a4">     * @param string
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#50fa7b">Main</span><span style="color:#ff79c6">(</span>String string<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        string <span style="color:#ff79c6">=</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">replaceAll</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34; &#34;</span><span style="color:#ff79c6">,</span> <span style="color:#f1fa8c">&#34;&#34;</span><span style="color:#ff79c6">);</span>
+        string <span style="color:#ff79c6">=</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">replaceAll</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;×&#34;</span><span style="color:#ff79c6">,</span> <span style="color:#f1fa8c">&#34;*&#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#6272a4">//将string把它通过操作符号分开 并放入到中缀表达式的List中
+</span><span style="color:#6272a4"></span>        StringTokenizer tokenizer <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> StringTokenizer<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">,</span> <span style="color:#f1fa8c">&#34;+-*/()&#34;</span><span style="color:#ff79c6">,</span> <span style="color:#ff79c6">true</span><span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">(</span>tokenizer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">hasMoreElements</span><span style="color:#ff79c6">())</span> <span style="color:#ff79c6">{</span>
+            infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>tokenizer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">nextToken</span><span style="color:#ff79c6">());</span>
+        <span style="color:#ff79c6">}</span>
+    <span style="color:#ff79c6">}</span>
+
+
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 转变成前缀式
+</span><span style="color:#6272a4">     * @return
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">convertPrefix</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+        operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">clear</span><span style="color:#ff79c6">();</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> i <span style="color:#ff79c6">=</span> infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">size</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">-</span> 1<span style="color:#ff79c6">;</span> i <span style="color:#ff79c6">&gt;=</span> 0<span style="color:#ff79c6">;</span> i<span style="color:#ff79c6">--)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isNumber<span style="color:#ff79c6">(</span>infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">)))</span> <span style="color:#ff79c6">{</span>
+                prefix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">));</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isOperate<span style="color:#ff79c6">(</span>infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">)))</span> <span style="color:#ff79c6">{</span>
+                getPrefix<span style="color:#ff79c6">(</span>infix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">get</span><span style="color:#ff79c6">(</span>i<span style="color:#ff79c6">));</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
+                System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">println</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;illegal!!!&#34;</span><span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">(!</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">empty</span><span style="color:#ff79c6">())</span> <span style="color:#ff79c6">{</span>
+            prefix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+        <span style="color:#ff79c6">}</span>
+        Collections<span style="color:#ff79c6">.</span><span style="color:#50fa7b">reverse</span><span style="color:#ff79c6">(</span>prefix<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">return</span> prefix<span style="color:#ff79c6">;</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 转变成后缀式
+</span><span style="color:#6272a4">     * @return
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> <span style="color:#50fa7b">convertPostifx</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+        operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">clear</span><span style="color:#ff79c6">();</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span>String string <span style="color:#ff79c6">:</span> infix<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isNumber<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                postifx<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isOperate<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                getPostifx<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
+                System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">println</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;illegal!!!&#34;</span><span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">(!</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">empty</span><span style="color:#ff79c6">())</span> <span style="color:#ff79c6">{</span>
+            postifx<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">return</span> postifx<span style="color:#ff79c6">;</span>
+    <span style="color:#ff79c6">}</span>
+
+
+
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 获取前缀表达式
+</span><span style="color:#6272a4">     * @param string
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">getPrefix</span><span style="color:#ff79c6">(</span>String string<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">empty</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">||</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;)&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;(&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            String tmp<span style="color:#ff79c6">;</span>
+            <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">(!(</span>tmp <span style="color:#ff79c6">=</span> operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">()).</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;)&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                prefix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>tmp<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">peek</span><span style="color:#ff79c6">().</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;)&#34;</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">||</span> comparePriority<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">,</span> operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">peek</span><span style="color:#ff79c6">()))</span> <span style="color:#ff79c6">{</span>
+            operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
+            prefix<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+            getPrefix<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 获取后缀表达式
+</span><span style="color:#6272a4">     * @param string
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">getPostifx</span><span style="color:#ff79c6">(</span>String string<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">empty</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">||</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;(&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;)&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            String tmp<span style="color:#ff79c6">;</span>
+            <span style="color:#ff79c6">while</span> <span style="color:#ff79c6">(!(</span>tmp <span style="color:#ff79c6">=</span> operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">()).</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;(&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                postifx<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>tmp<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">peek</span><span style="color:#ff79c6">().</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;(&#34;</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">||</span> comparePriority<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">,</span> operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">peek</span><span style="color:#ff79c6">()))</span> <span style="color:#ff79c6">{</span>
+            operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
+            postifx<span style="color:#ff79c6">.</span><span style="color:#50fa7b">add</span><span style="color:#ff79c6">(</span>operator<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+            getPostifx<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span>
+
+    <span style="color:#ff79c6">}</span>
+    
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 计算前缀式的值
+</span><span style="color:#6272a4">     * @return
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> String <span style="color:#50fa7b">calculatePrefix</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+        Collections<span style="color:#ff79c6">.</span><span style="color:#50fa7b">reverse</span><span style="color:#ff79c6">(</span>prefix<span style="color:#ff79c6">);</span>
+        result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">clear</span><span style="color:#ff79c6">();</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span>String string <span style="color:#ff79c6">:</span> prefix<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isNumber<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isOperate<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                <span style="color:#8be9fd">int</span> val1 <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+                <span style="color:#8be9fd">int</span> val2 <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+                <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;*&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">*</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;/&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">/</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;+&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">+</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;-&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">-</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">return</span> result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">();</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * 计算后缀式的值
+</span><span style="color:#6272a4">     * @return
+</span><span style="color:#6272a4">     */</span>
+    <span style="color:#8be9fd;font-style:italic">private</span> String <span style="color:#50fa7b">calculatePostifx</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
+        result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">clear</span><span style="color:#ff79c6">();</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span>String string <span style="color:#ff79c6">:</span> postifx<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isNumber<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">);</span>
+            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>isOperate<span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                <span style="color:#8be9fd">int</span> val2 <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+                <span style="color:#8be9fd">int</span> val1 <span style="color:#ff79c6">=</span> Integer<span style="color:#ff79c6">.</span><span style="color:#50fa7b">parseInt</span><span style="color:#ff79c6">(</span>result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">());</span>
+                <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;*&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">*</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;/&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">/</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;+&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">+</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span><span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;-&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+                    result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">push</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val1 <span style="color:#ff79c6">-</span> val2<span style="color:#ff79c6">));</span>
+                <span style="color:#ff79c6">}</span>
+            <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">return</span> result<span style="color:#ff79c6">.</span><span style="color:#50fa7b">pop</span><span style="color:#ff79c6">();</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">boolean</span> <span style="color:#50fa7b">isNumber</span><span style="color:#ff79c6">(</span>String num<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">return</span> num<span style="color:#ff79c6">.</span><span style="color:#50fa7b">matches</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;\\d+&#34;</span><span style="color:#ff79c6">);</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">boolean</span> <span style="color:#50fa7b">isOperate</span><span style="color:#ff79c6">(</span>String op<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">return</span> op<span style="color:#ff79c6">.</span><span style="color:#50fa7b">matches</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;[\\+\\*\\/\\(\\)-]&#34;</span><span style="color:#ff79c6">);</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">boolean</span> <span style="color:#50fa7b">comparePriority</span><span style="color:#ff79c6">(</span>String op1<span style="color:#ff79c6">,</span> String op2<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">return</span> getPriority<span style="color:#ff79c6">(</span>op1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">&gt;</span> getPriority<span style="color:#ff79c6">(</span>op2<span style="color:#ff79c6">);</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd">int</span> <span style="color:#50fa7b">getPriority</span><span style="color:#ff79c6">(</span>String string<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;+&#34;</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">||</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;-&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">return</span> 1<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;*&#34;</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">||</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;/&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">return</span> 2<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;(&#34;</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">||</span> string<span style="color:#ff79c6">.</span><span style="color:#50fa7b">equals</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;)&#34;</span><span style="color:#ff79c6">))</span> <span style="color:#ff79c6">{</span>
+            <span style="color:#ff79c6">return</span> 3<span style="color:#ff79c6">;</span>
+        <span style="color:#ff79c6">}</span>
+        <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">-</span>1<span style="color:#ff79c6">;</span>
+    <span style="color:#ff79c6">}</span>
+
+    <span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">static</span> <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">main</span><span style="color:#ff79c6">(</span>String<span style="color:#ff79c6">[]</span> args<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+        Main main <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> Main<span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;1+((2-3)*(4+5))+((6/2))&#34;</span><span style="color:#ff79c6">);</span>
+        List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> list1 <span style="color:#ff79c6">=</span> main<span style="color:#ff79c6">.</span><span style="color:#50fa7b">convertPrefix</span><span style="color:#ff79c6">();</span>
+        List<span style="color:#ff79c6">&lt;</span>String<span style="color:#ff79c6">&gt;</span> list2 <span style="color:#ff79c6">=</span> main<span style="color:#ff79c6">.</span><span style="color:#50fa7b">convertPostifx</span><span style="color:#ff79c6">();</span>
+        System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;前缀表达式为：&#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span>String s <span style="color:#ff79c6">:</span> list1<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span>s <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34; &#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span>
+        System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;\n&#39;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;后缀表达式为：&#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">for</span> <span style="color:#ff79c6">(</span>String s <span style="color:#ff79c6">:</span> list2<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
+            System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span>s <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34; &#34;</span><span style="color:#ff79c6">);</span>
+        <span style="color:#ff79c6">}</span>
+        System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;\n&#39;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;前缀表达式计算结果为：&#34;</span> <span style="color:#ff79c6">+</span> main<span style="color:#ff79c6">.</span><span style="color:#50fa7b">calculatePrefix</span><span style="color:#ff79c6">());</span>
+        System<span style="color:#ff79c6">.</span><span style="color:#50fa7b">out</span><span style="color:#ff79c6">.</span><span style="color:#50fa7b">print</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#39;\n&#39;</span> <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;后缀表达式计算结果为：&#34;</span> <span style="color:#ff79c6">+</span> main<span style="color:#ff79c6">.</span><span style="color:#50fa7b">calculatePostifx</span><span style="color:#ff79c6">());</span>
+    <span style="color:#ff79c6">}</span>
+
+<span style="color:#ff79c6">}</span>
+
+</code></pre></div>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/post/binary-search-tree/" data-toggle="tooltip" data-placement="top" title="二叉搜索树">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "elijahs-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/java" title="java">
+                            java
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/tree" title="tree">
+                            tree
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                <p class="copyright text-muted">
+                    Copyright &copy; Elijah 2020
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+            o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if ($('#tag_cloud').length !== 0) {
+        async("/js/jquery.tagcloud.js", function () {
+            $.fn.tagcloud.defaults = {
+                
+                color: { start: '#bbbbee', end: '#0085a1' },
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function () {
+        var $nav = document.querySelector("nav");
+        if ($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-96009236-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+</html>
