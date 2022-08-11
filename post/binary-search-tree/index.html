@@ -1,442 +1,96 @@
-<!DOCTYPE html>
-<html lang="zh-Hans">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    
-    <meta property="og:site_name" content="Elijah">
-    <meta property="og:type" content="article">
-
-    
-    <meta property="og:image" content="https://memory7734.com/img/home-bg-jeep.jpg">
-    <meta property="twitter:image" content="https://memory7734.com/img/home-bg-jeep.jpg" />
-    
-
-    
-    <meta name="title" content="二叉搜索树" />
-    <meta property="og:title" content="二叉搜索树" />
-    <meta property="twitter:title" content="二叉搜索树" />
-    
-
-    
-    <meta name="description" content="网络原住民。">
-    <meta property="og:description" content="网络原住民。" />
-    <meta property="twitter:description" content="网络原住民。" />
-    
-
-    
-    <meta property="twitter:card" content="summary" />
-    
-    
-
-    <meta name="keyword" content="Elijah, 博客, 个人网站, 互联网, Web">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-
-    <title>二叉搜索树</title>
-
-    <link rel="canonical" href="/post/binary-search-tree/">
-
-    <link rel="stylesheet" href="/css/iDisqus.min.css" />
-
-    
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-    
-    <link rel="stylesheet" href="/css/hux-blog.min.css">
-
-    
-    <link rel="stylesheet" href="/css/zanshang.css">
-
-    
-    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
-        type="text/css">
-
-    
-    
-
-    
-    
-    <script src="/js/jquery.min.js"></script>
-
-    
-    <script src="/js/bootstrap.min.js"></script>
-
-    
-    <script src="/js/hux-blog.min.js"></script>
-
-    
-    
-
-</head>
-
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-    <div class="container-fluid">
-        
-        <div class="navbar-header page-scroll">
-            <button type="button" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Elijah</a>
-        </div>
-
-        
-        
-        <div id="huxblog_navbar">
-            <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    
-                        
-                        <li>
-                            <a href="/categories/%E7%AE%97%E6%B3%95">算法</a>
-                        </li>
-                        
-                    
-                    
-		    
-                        <li><a href="/about/">ABOUT</a></li>
-                    
-
-                    
-                </ul>
-            </div>
-        </div>
-        
-    </div>
-    
-</nav>
-<script>
-    
-    
-    
-    var $body   = document.body;
-    var $toggle = document.querySelector('.navbar-toggle');
-    var $navbar = document.querySelector('#huxblog_navbar');
-    var $collapse = document.querySelector('.navbar-collapse');
-
-    $toggle.addEventListener('click', handleMagic)
-    function handleMagic(e){
-        if ($navbar.className.indexOf('in') > 0) {
-        
-            $navbar.className = " ";
-            
-            setTimeout(function(){
-                
-                if($navbar.className.indexOf('in') < 0) {
-                    $collapse.style.height = "0px"
-                }
-            },400)
-        }else{
-        
-            $collapse.style.height = "auto"
-            $navbar.className += " in";
-        }
-    }
-</script>
-
-
-
-
-<style type="text/css">
-    header.intro-header {
-        background-image: url('/img/home-bg-jeep.jpg')
-    }
-</style>
-<header class="intro-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/java" title="Java">
-                            Java
-                        </a>
-                        
-                        <a class="tag" href="/tags/tree" title="Tree">
-                            Tree
-                        </a>
-                        
-                    </div>
-                    <h1>二叉搜索树</h1>
-                    <h2 class="subheading"></h2>
-                    <span class="meta">
-                        Posted by 
-                        
-                                Elijah
-                         
-                        on 
-                        Monday, March 20, 2017
-                        
-                        
-                        
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-
-
-
-<article>
-    <div class="container">
-        <div class="row">
-
-            
-            <div class="
-                col-lg-11 col-lg-offset-1
-                col-md-10 col-md-offset-1
-                post-container">
-
-                
-                <p>在学习数据结构中最常见的，最多考到的就是树，而树中最多使用到的就是二叉树，我们将学习如何对一棵二叉树进行增删改查，其中二叉树用二叉搜索树举例</p>
-<hr>
-<p>首先，我们应该定义一个二叉树的节点信息</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"><span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">class</span> <span style="color:#50fa7b">TreeNode</span> <span style="color:#ff79c6">{</span>
-    <span style="color:#8be9fd">int</span> val<span style="color:#ff79c6">;</span>
-    TreeNode left<span style="color:#ff79c6">;</span>
-    TreeNode rigth<span style="color:#ff79c6">;</span>
-    TreeNode<span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> x<span style="color:#ff79c6">){</span>
-        val <span style="color:#ff79c6">=</span> x<span style="color:#ff79c6">;</span>
-    <span style="color:#ff79c6">}</span>
-
-    @Override
-    <span style="color:#8be9fd;font-style:italic">public</span> String <span style="color:#50fa7b">toString</span><span style="color:#ff79c6">()</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">return</span> String<span style="color:#ff79c6">.</span><span style="color:#50fa7b">valueOf</span><span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">);</span>
-    <span style="color:#ff79c6">}</span>
-<span style="color:#ff79c6">}</span>
-</code></pre></div><p>对于树节点node的所有子节点进行遍历，查找x值是否存在，如果大于当前值则寻找node的右节点，如果小于则查找左节点，否则意味着<code>node.val==x</code>则返回node节点</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java"> <span style="color:#8be9fd;font-style:italic">public</span> TreeNode <span style="color:#50fa7b">Find</span><span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> x<span style="color:#ff79c6">,</span> TreeNode node<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>x <span style="color:#ff79c6">&gt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> Find<span style="color:#ff79c6">(</span>x<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>x <span style="color:#ff79c6">&lt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> Find<span style="color:#ff79c6">(</span>x<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> node<span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span>
-    <span style="color:#ff79c6">}</span>
-</code></pre></div><p>寻找最小值就是不断地寻找最左子节点</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8be9fd;font-style:italic">public</span> TreeNode <span style="color:#50fa7b">FindMin</span><span style="color:#ff79c6">(</span>TreeNode node<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span> <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> node<span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> FindMin<span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span>
-    <span style="color:#ff79c6">}</span>
-</code></pre></div><p>与寻找最小值相似，寻找最大值的过程就是不断寻找最右子节点</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8be9fd;font-style:italic">public</span> TreeNode <span style="color:#50fa7b">FindMax</span><span style="color:#ff79c6">(</span>TreeNode node<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> node<span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> FindMax<span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span>
-    <span style="color:#ff79c6">}</span>
-</code></pre></div><p>插入节点就是判断<code>val</code>值对于当前<code>node.val</code>是应该在左边还是在右边，如果当前节点为空，则新建一个值为<code>val</code>的新节点</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">  <span style="color:#8be9fd;font-style:italic">public</span> TreeNode <span style="color:#50fa7b">Insert</span><span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> val<span style="color:#ff79c6">,</span> TreeNode node<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            node <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> TreeNode<span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>val <span style="color:#ff79c6">&lt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span> <span style="color:#ff79c6">=</span> Insert<span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>val <span style="color:#ff79c6">&gt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">=</span> Insert<span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span>
-        <span style="color:#ff79c6">return</span> node<span style="color:#ff79c6">;</span>
-    <span style="color:#ff79c6">}</span>
-</code></pre></div><p>删除节点就是判断<code>val</code>值对于当前<code>node.val</code>是应该在左边还是在右边，如果等于当前节点，则判断是否只有一个节点，如果是则将它的下一个节点指向下一个节点的下一个节点，如果有两个节点，则将该值变为右子树中的最小值，并删除右子树的最小值</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Java" data-lang="Java">    <span style="color:#8be9fd;font-style:italic">public</span> TreeNode <span style="color:#50fa7b">Delete</span><span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> val<span style="color:#ff79c6">,</span> TreeNode node<span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-        <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">return</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">;</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>val <span style="color:#ff79c6">&lt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span> <span style="color:#ff79c6">=</span> Delete<span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>val <span style="color:#ff79c6">&gt;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">=</span> Delete<span style="color:#ff79c6">(</span>val<span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span> <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span> <span style="color:#ff79c6">&amp;&amp;</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">!=</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-            TreeNode tmp <span style="color:#ff79c6">=</span> FindMin<span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span> <span style="color:#ff79c6">=</span> tmp<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">;</span>
-            node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">=</span> Delete<span style="color:#ff79c6">(</span>tmp<span style="color:#ff79c6">.</span><span style="color:#50fa7b">val</span><span style="color:#ff79c6">,</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">);</span>
-        <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">{</span>
-            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span> <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-                node <span style="color:#ff79c6">=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span><span style="color:#ff79c6">;</span>
-            <span style="color:#ff79c6">}</span> <span style="color:#ff79c6">else</span> <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">(</span>node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">rigth</span> <span style="color:#ff79c6">==</span> <span style="color:#ff79c6">null</span><span style="color:#ff79c6">)</span> <span style="color:#ff79c6">{</span>
-                node <span style="color:#ff79c6">=</span> node<span style="color:#ff79c6">.</span><span style="color:#50fa7b">left</span><span style="color:#ff79c6">;</span>
-            <span style="color:#ff79c6">}</span>
-        <span style="color:#ff79c6">}</span>
-        <span style="color:#ff79c6">return</span> node<span style="color:#ff79c6">;</span>
-    <span style="color:#ff79c6">}</span>
-</code></pre></div><p>这样我们就完成了二叉搜索树的增加删除查询，修改就是在查询到结果之后进行对<code>node.val</code>值的修改操作，在这里就不再赘述</p>
-
-
-                
-
-                <hr>
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/post/reverse-polish-notation/" data-toggle="tooltip" data-placement="top" title="中缀、前缀、后缀表达式的转换">&larr;
-                            Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/post/tree-traversal/" data-toggle="tooltip" data-placement="top" title="树的先序、中序、后序、层次遍历">Next
-                            Post &rarr;</a>
-                    </li>
-                    
-                </ul>
-
-                
-<div id="disqus-comment"></div>
-
-<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "elijahs-blog" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
-            </div>
-            
-            <div class="
-                col-lg-11 col-lg-offset-1
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                
-                
-                <section>
-                    <hr class="hidden-sm hidden-xs">
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                        
-                        
-                        <a href="/tags/java" title="java">
-                            java
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/tree" title="tree">
-                            tree
-                        </a>
-                        
-                        
-                    </div>
-                </section>
-                
-
-                
-                
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                
-                <p class="copyright text-muted">
-                    Copyright &copy; Elijah 2020
-                </p>
-            </div>
-        </div>
-    </div>
-</footer>
-
-
-
-
-<script>
-    function async(u, c) {
-        var d = document, t = 'script',
-            o = d.createElement(t),
-            s = d.getElementsByTagName(t)[0];
-        o.src = u;
-        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-        s.parentNode.insertBefore(o, s);
-    }
-</script>
-
-
-
-
-
-
-<script>
-    
-    if ($('#tag_cloud').length !== 0) {
-        async("/js/jquery.tagcloud.js", function () {
-            $.fn.tagcloud.defaults = {
-                
-                color: { start: '#bbbbee', end: '#0085a1' },
-            };
-            $('#tag_cloud a').tagcloud();
-        })
-    }
-</script>
-
-
-<script>
-    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function () {
-        var $nav = document.querySelector("nav");
-        if ($nav) FastClick.attach($nav);
-    })
-</script>
-
-
-
-
-
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-96009236-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-</body>
-</html>
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:site_name" content="Elijah's Blog"><meta property="og:type" content="article"><meta property="og:image" content="https://memory7734.com/img/home-bg-jeep.jpg"><meta property="twitter:image" content="https://memory7734.com/img/home-bg-jeep.jpg"><meta name=title content="二叉搜索树"><meta property="og:title" content="二叉搜索树"><meta property="twitter:title" content="二叉搜索树"><meta name=description content="网络原住民。"><meta property="og:description" content="网络原住民。"><meta property="twitter:description" content="网络原住民。"><meta property="twitter:card" content="summary"><meta name=keyword content="Elijah, blog, Web"><link rel="shortcut icon" href=/img/favicon.ico><title>二叉搜索树 | Elijah'blog</title><link rel=canonical href=/post/binary-search-tree/><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/hugo-theme-cleanwhite.min.css><link rel=stylesheet href=/css/zanshang.css><link href=https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css rel=stylesheet type=text/css><script src=/js/jquery.min.js></script>
+<script src=/js/bootstrap.min.js></script>
+<script src=/js/hux-blog.min.js></script></head><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span></button>
+<a class=navbar-brand href=/>Elijah's Blog</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/>All Posts</a></li><li><a href=/archive/>ARCHIVE</a></li><li><a href=/about/>ABOUT</a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse");$toggle.addEventListener("click",handleMagic);function handleMagic(){$navbar.className.indexOf("in")>0?($navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)):($collapse.style.height="auto",$navbar.className+=" in")}</script><style type=text/css>header.intro-header{background-image:url(/img/home-bg-jeep.jpg)}</style><header class=intro-header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags><a class=tag href=/tags/java title=Java>Java</a>
+<a class=tag href=/tags/tree title=Tree>Tree</a></div><h1>二叉搜索树</h1><h2 class=subheading></h2><span class=meta>Posted by
+Elijah's Blog
+on
+Monday, March 20, 2017</span></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+post-container"><p>在学习数据结构中最常见的，最多考到的就是树，而树中最多使用到的就是二叉树，我们将学习如何对一棵二叉树进行增删改查，其中二叉树用二叉搜索树举例</p><hr><p>首先，我们应该定义一个二叉树的节点信息</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span><span style=color:#8be9fd;font-style:italic>public</span> <span style=color:#8be9fd;font-style:italic>class</span> <span style=color:#50fa7b>TreeNode</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd>int</span> val<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    TreeNode left<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    TreeNode rigth<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    TreeNode<span style=color:#ff79c6>(</span><span style=color:#8be9fd>int</span> x<span style=color:#ff79c6>){</span>
+</span></span><span style=display:flex><span>        val <span style=color:#ff79c6>=</span> x<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @Override
+</span></span><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> String <span style=color:#50fa7b>toString</span><span style=color:#ff79c6>()</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> String<span style=color:#ff79c6>.</span><span style=color:#50fa7b>valueOf</span><span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span><span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>对于树节点node的所有子节点进行遍历，查找x值是否存在，如果大于当前值则寻找node的右节点，如果小于则查找左节点，否则意味着<code>node.val==x</code>则返回node节点</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span> <span style=color:#8be9fd;font-style:italic>public</span> TreeNode <span style=color:#50fa7b>Find</span><span style=color:#ff79c6>(</span><span style=color:#8be9fd>int</span> x<span style=color:#ff79c6>,</span> TreeNode node<span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>x <span style=color:#ff79c6>&gt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> Find<span style=color:#ff79c6>(</span>x<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>x <span style=color:#ff79c6>&lt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> Find<span style=color:#ff79c6>(</span>x<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> node<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>寻找最小值就是不断地寻找最左子节点</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> TreeNode <span style=color:#50fa7b>FindMin</span><span style=color:#ff79c6>(</span>TreeNode node<span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span> <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> node<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> FindMin<span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>与寻找最小值相似，寻找最大值的过程就是不断寻找最右子节点</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> TreeNode <span style=color:#50fa7b>FindMax</span><span style=color:#ff79c6>(</span>TreeNode node<span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> node<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> FindMax<span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>插入节点就是判断<code>val</code>值对于当前<code>node.val</code>是应该在左边还是在右边，如果当前节点为空，则新建一个值为<code>val</code>的新节点</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span>  <span style=color:#8be9fd;font-style:italic>public</span> TreeNode <span style=color:#50fa7b>Insert</span><span style=color:#ff79c6>(</span><span style=color:#8be9fd>int</span> val<span style=color:#ff79c6>,</span> TreeNode node<span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            node <span style=color:#ff79c6>=</span> <span style=color:#ff79c6>new</span> TreeNode<span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>val <span style=color:#ff79c6>&lt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span> <span style=color:#ff79c6>=</span> Insert<span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>val <span style=color:#ff79c6>&gt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>=</span> Insert<span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> node<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>删除节点就是判断<code>val</code>值对于当前<code>node.val</code>是应该在左边还是在右边，如果等于当前节点，则判断是否只有一个节点，如果是则将它的下一个节点指向下一个节点的下一个节点，如果有两个节点，则将该值变为右子树中的最小值，并删除右子树的最小值</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Java data-lang=Java><span style=display:flex><span>    <span style=color:#8be9fd;font-style:italic>public</span> TreeNode <span style=color:#50fa7b>Delete</span><span style=color:#ff79c6>(</span><span style=color:#8be9fd>int</span> val<span style=color:#ff79c6>,</span> TreeNode node<span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>return</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>val <span style=color:#ff79c6>&lt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span> <span style=color:#ff79c6>=</span> Delete<span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>val <span style=color:#ff79c6>&gt;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>=</span> Delete<span style=color:#ff79c6>(</span>val<span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span> <span style=color:#ff79c6>!=</span> <span style=color:#ff79c6>null</span> <span style=color:#ff79c6>&amp;&amp;</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>!=</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            TreeNode tmp <span style=color:#ff79c6>=</span> FindMin<span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span> <span style=color:#ff79c6>=</span> tmp<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>            node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>=</span> Delete<span style=color:#ff79c6>(</span>tmp<span style=color:#ff79c6>.</span><span style=color:#50fa7b>val</span><span style=color:#ff79c6>,</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>);</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span> <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>                node <span style=color:#ff79c6>=</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>}</span> <span style=color:#ff79c6>else</span> <span style=color:#ff79c6>if</span> <span style=color:#ff79c6>(</span>node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>rigth</span> <span style=color:#ff79c6>==</span> <span style=color:#ff79c6>null</span><span style=color:#ff79c6>)</span> <span style=color:#ff79c6>{</span>
+</span></span><span style=display:flex><span>                node <span style=color:#ff79c6>=</span> node<span style=color:#ff79c6>.</span><span style=color:#50fa7b>left</span><span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>            <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>}</span>
+</span></span><span style=display:flex><span>        <span style=color:#ff79c6>return</span> node<span style=color:#ff79c6>;</span>
+</span></span><span style=display:flex><span>    <span style=color:#ff79c6>}</span>
+</span></span></code></pre></div><p>这样我们就完成了二叉搜索树的增加删除查询，修改就是在查询到结果之后进行对<code>node.val</code>值的修改操作，在这里就不再赘述</p><hr><ul class=pager><li class=previous><a href=/post/reverse-polish-notation/ data-toggle=tooltip data-placement=top title=中缀、前缀、后缀表达式的转换>&larr;
+Previous Post</a></li><li class=next><a href=/post/tree-traversal/ data-toggle=tooltip data-placement=top title=树的先序、中序、后序、层次遍历>Next
+Post &rarr;</a></li></ul></div><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+sidebar-container"><section><hr class="hidden-sm hidden-xs"><h5><a href=/tags/>FEATURED TAGS</a></h5><div class=tags><a href=/tags/java title=java>java</a>
+<a href=/tags/tree title=tree>tree</a></div></section></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=mailto:memory7734@gmail.com><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-envelope fa-stack-1x fa-inverse"></i></span></a></li><li><a href=https://twitter.com/memory7734><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/memory7734><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a href rel=alternate type=application/rss+xml title="Elijah's Blog"><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fas fa-rss fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; Elijah's Blog 2022<br><a href=https://themes.gohugo.io/hugo-theme-cleanwhite>CleanWhite Hugo Theme</a> by <a href=https://zhaohuabing.com>Huabing</a> |
+<iframe style=margin-left:2px;margin-bottom:-5px frameborder=0 scrolling=0 width=100px height=20px src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true"></iframe></p></div></div></div></footer><script>function loadAsync(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(null,e)},!1),i.parentNode.insertBefore(n,i)}</script><script>$("#tag_cloud").length!==0&&loadAsync("/js/jquery.tagcloud.js",function(){$.fn.tagcloud.defaults={color:{start:"#bbbbee",end:"#0085a1"}},$("#tag_cloud a").tagcloud()})</script><script>loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js",function(){var e=document.querySelector("nav");e&&FastClick.attach(e)})</script><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-96009236-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
